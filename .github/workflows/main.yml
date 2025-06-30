@@ -1,1 +1,56 @@
-# Code goes here
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and Package IaaC
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Compress IaaC folder
+        run: |
+          zip -r Iaac.zip Iaac
+
+      - name: Upload IaaC artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: IaaC
+          path: Iaac.zip
+
+  deploy_to_dev:
+    if: github.ref == 'refs/heads/main'
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    environment: development
+    needs: build
+    steps:
+      - name: Download IaaC artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: IaaC
+
+      - name: Extract IaaC artifact
+        run: |
+          unzip Iaac.zip
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Azure Resources Bicep
+        run: |
+          az deployment group create \
+            --resource-group myResourceGroup \
+            --template-file Iaac/azure-resources.bicep \
+            --parameters tenant=dev location="East US"
+
