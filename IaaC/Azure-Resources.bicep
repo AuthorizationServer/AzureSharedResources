@@ -16,8 +16,14 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   kind: 'web'
   properties: {
     Application_Type: 'web'
+    Flow_Type: 'Bluefield'
+    Request_Source: 'rest'
+    IngestionMode: 'ApplicationInsights'
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
     DisableIpMasking: true
     WorkspaceResourceId: workspace.id
+    RetentionInDays: application.logAnalyticsWorkspace.retentionInDays
   }
 }
 
@@ -26,7 +32,7 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   location: application.location.name
   properties: {
     sku: {
-      name: 'Free'
+      name: 'PerGB2018'
     }
   }
 }
