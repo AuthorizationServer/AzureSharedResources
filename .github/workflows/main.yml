@@ -49,8 +49,9 @@ jobs:
 
       - name: Deploy Azure Resources Bicep
         run: |
+          var env
           az deployment group create \
-            --resource-group ${{ inputs.environment.RESOURCE_GROUP_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
             --template-file IaaC/Azure-Resources.bicep \
             --parameters tenant=dev location="East US"
 
