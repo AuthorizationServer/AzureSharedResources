@@ -27,7 +27,7 @@ jobs:
           path: IaaC.zip
 
   deploy_to_dev:
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     name: Deploy to Development
     runs-on: ubuntu-latest
     environment: development
@@ -50,7 +50,7 @@ jobs:
       - name: Deploy Azure Resources Bicep
         run: |
           az deployment group create \
-            --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+            --resource-group ${{ RESOURCE_GROUP_NAME }} \
             --template-file IaaC/Azure-Resources.bicep \
             --parameters tenant=dev location="East US"
 
