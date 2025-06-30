@@ -40,7 +40,7 @@ jobs:
 
       - name: Extract IaaC artifact
         run: |
-          unzip Iaac.zip
+          unzip IaaC.zip
 
       - name: Azure Login
         uses: azure/login@v1
